@@ -6,24 +6,35 @@ import java.util.TimerTask;
 public class SensorManager {
 
   // ===============================================================================================
-  // CONSTANTS
-  // ===============================================================================================
-  public final static String SENSORS_PATH = "./sensors";
-  public final static int FREQUENCY = 10; // Scan frequency in seconds
-
-
-  // ===============================================================================================
   // PRIVATE ATTRIBUTES
   // ===============================================================================================
   private ArrayList<String> sensorFiles = new ArrayList<String>();
   private ArrayList<Adapter> adapters = new ArrayList<Adapter>();
+  private ParkingServer server;
+
+
+  // ===============================================================================================
+  // PUBLIC ATTRIBUTES
+  // ===============================================================================================
+  public int frequency; // Scan frequency in seconds
+  public String sensorsPath;
+
+
+  // ===============================================================================================
+  // CONSTRUCTOR
+  // ===============================================================================================
+  public SensorManager(int frequency, String sensorsPath, ParkingServer server) {
+    this.frequency = frequency;
+    this.sensorsPath = sensorsPath;
+    this.server = server;
+  }
 
 
   // ===============================================================================================
   // PRIVATE METHODS
   // ===============================================================================================
   private ArrayList<String> listNewFiles() {
-    String[] files = new File(SensorManager.SENSORS_PATH).list();
+    String[] files = new File(this.sensorsPath).list();
     ArrayList<String> newFiles = new ArrayList<String>();
 
     for (String file : files) {
@@ -45,7 +56,7 @@ public class SensorManager {
     ArrayList<Sensor> newSensors = new ArrayList<Sensor>();
 
     newFiles.forEach(file -> {
-      String path = SensorManager.SENSORS_PATH + "/" + file;
+      String path = this.sensorsPath + "/" + file;
 
       try {
         newSensors.add(Sensor.fileToSensor(new File(path)));
@@ -61,7 +72,8 @@ public class SensorManager {
     ArrayList<Sensor> newSensors = listNewSensors();
 
     newSensors.forEach(sensor -> {
-      Adapter adapter = new Adapter(sensor).addRandomFilters(3);
+      Adapter adapter = new Adapter(sensor, server).addRandomFilters(3);
+      server.addParkingSpot(sensor.getId());
       adapters.add(adapter);
       adapter.start();
 
@@ -81,7 +93,7 @@ public class SensorManager {
     };
 
     Timer timer = new Timer();
-    timer.schedule(timerTask, 0, SensorManager.FREQUENCY * 1000);
+    timer.schedule(timerTask, 0, this.frequency * 1000);
   }
 
 }

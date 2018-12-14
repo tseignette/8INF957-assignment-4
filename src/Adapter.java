@@ -9,14 +9,16 @@ public class Adapter {
   // PRIVATE ATTRIBUTES
   // ===============================================================================================
   private Sensor sensor;
+  private ParkingServer server;
   private ArrayList<Filter> filters = new ArrayList<Filter>();
 
 
   // ===============================================================================================
   // CONSTRUCTOR
   // ===============================================================================================
-  public Adapter(Sensor sensor) {
+  public Adapter(Sensor sensor, ParkingServer server) {
     this.sensor = sensor;
+    this.server = server;
   }
 
 
@@ -61,8 +63,10 @@ public class Adapter {
       public void run() {
         Character value = read();
 
-        if (value != Filter.NO_DATA)
+        if (value != Filter.NO_DATA) {
           Log.log("Reading " + sensor.toString() + ": " + value);
+          server.updateParkingSpot(sensor.getId(), value);
+        }
       }
     };
 
