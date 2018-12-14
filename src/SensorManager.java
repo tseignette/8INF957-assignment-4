@@ -33,6 +33,29 @@ public class SensorManager {
     return newFiles;
   }
 
+  private ArrayList<Sensor> listNewSensors() {
+    // Listing new files
+    ArrayList<String> newFiles = listNewFiles();
+
+    if (newFiles.size() > 0)
+      this.sensorFiles.addAll(newFiles);
+
+    // Reading new files
+    ArrayList<Sensor> newSensors = new ArrayList<Sensor>();
+
+    newFiles.forEach(file -> {
+      String path = SensorManager.SENSORS_PATH + "/" + file;
+
+      try {
+        newSensors.add(Sensor.fileToSensor(new File(path)));
+      } catch (Exception e) {
+        System.out.println("ERROR while reading sensor file \"" + file + "\"");
+      }
+    });
+
+    return newSensors;
+  }
+
 
   // ===============================================================================================
   // PUBLIC METHODS
@@ -40,11 +63,10 @@ public class SensorManager {
   public void start() {
     TimerTask timerTask = new TimerTask() {
       public void run() {
-        ArrayList<String> newFiles = listNewFiles();
+        ArrayList<Sensor> newSensors = listNewSensors();
 
-        if (newFiles.size() > 0) { 
-          sensorFiles.addAll(newFiles);
-          System.out.println("New file(s) detected: " + newFiles);
+        if (newSensors.size() > 0) {
+          System.out.println("New sensor(s) added: " + newSensors);
         }
       }
     };
