@@ -60,14 +60,12 @@ public class SensorManager {
   private void addNewSensors() {
     ArrayList<Sensor> newSensors = listNewSensors();
 
-    if (newSensors.size() > 0) {
-      Log.log("New sensor(s) added: " + newSensors);
-    }
-
     newSensors.forEach(sensor -> {
-      Adapter adapter = new Adapter(sensor);
+      Adapter adapter = new Adapter(sensor).addRandomFilters(3);
       adapters.add(adapter);
       adapter.start();
+
+      Log.log("New sensor added: " + adapter.toString());
     });
   }
 
