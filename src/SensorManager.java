@@ -16,6 +16,7 @@ public class SensorManager {
   // PRIVATE ATTRIBUTES
   // ===============================================================================================
   private ArrayList<String> sensorFiles = new ArrayList<String>();
+  private ArrayList<Adapter> adapters = new ArrayList<Adapter>();
 
 
   // ===============================================================================================
@@ -49,11 +50,25 @@ public class SensorManager {
       try {
         newSensors.add(Sensor.fileToSensor(new File(path)));
       } catch (Exception e) {
-        System.out.println("ERROR while reading sensor file \"" + file + "\"");
+        Log.log("ERROR while reading sensor file \"" + file + "\"");
       }
     });
 
     return newSensors;
+  }
+
+  private void addNewSensors() {
+    ArrayList<Sensor> newSensors = listNewSensors();
+
+    if (newSensors.size() > 0) {
+      Log.log("New sensor(s) added: " + newSensors);
+    }
+
+    newSensors.forEach(sensor -> {
+      Adapter adapter = new Adapter(sensor);
+      adapters.add(adapter);
+      adapter.start();
+    });
   }
 
 
@@ -63,11 +78,7 @@ public class SensorManager {
   public void start() {
     TimerTask timerTask = new TimerTask() {
       public void run() {
-        ArrayList<Sensor> newSensors = listNewSensors();
-
-        if (newSensors.size() > 0) {
-          System.out.println("New sensor(s) added: " + newSensors);
-        }
+        addNewSensors();
       }
     };
 

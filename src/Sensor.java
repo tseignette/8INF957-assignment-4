@@ -68,6 +68,18 @@ public class Sensor {
   // ===============================================================================================
   // PUBLIC METHODS
   // ===============================================================================================
+  public int getId() {
+    return this.id;
+  }
+
+  public int getFrequency() {
+    return this.frequency;
+  }
+
+  public String getLink() {
+    return this.link;
+  }
+
   public String toString() {
     return "Sensor " + id + " (" + frequency + "s, \"" + link + "\")";
   }
