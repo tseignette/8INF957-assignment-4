@@ -1,0 +1,3 @@
+SID: 456
+FRQ: 6
+LNK: ./sns2

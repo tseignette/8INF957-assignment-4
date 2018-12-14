@@ -1,0 +1,3 @@
+SID: 123
+FRQ: 5
+LNK: ./sns1
